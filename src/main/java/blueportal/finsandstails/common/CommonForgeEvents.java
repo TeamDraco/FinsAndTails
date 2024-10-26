@@ -1,8 +1,12 @@
 package blueportal.finsandstails.common;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -27,6 +31,7 @@ import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -163,6 +168,20 @@ public class CommonForgeEvents {
 
         if (offhandItem.is(FTTags.CLAW_GAUNTLETS)) {
             player.swing(hand);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        InteractionHand hand = event.getHand();
+        Player player = event.getEntity();
+        BlockPos pos = event.getPos();
+        Direction dir = event.getFace();
+
+        if (player.isSecondaryUseActive() && player.getItemInHand(hand).isEmpty() && player.hasPassenger(e -> e instanceof PenglilEntity)) {
+            PenglilEntity penglil = (PenglilEntity) player.getFirstPassenger();
+            penglil.stopRiding();
+            penglil.moveTo(pos.relative(dir), player.getYRot(), player.getXRot());
         }
     }
 

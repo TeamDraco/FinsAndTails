@@ -1,14 +1,15 @@
 {
-	"required": true,
-	"package": "blueportal.finsandstails.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"refmap": "finsandtails.refmap.json",
-	"mixins": [
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"client": [
-		"client.HumanoidArmorLayerMixin"
+  "required": true,
+  "package": "blueportal.finsandstails.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "finsandtails.refmap.json",
+  "mixins": [
+    "client.EntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "client.HumanoidArmorLayerMixin"
 	]
 }

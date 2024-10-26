@@ -1,6 +1,7 @@
 package blueportal.finsandstails.common.entities;
 
 import blueportal.finsandstails.registry.FTEntities;
+import com.google.common.collect.Lists;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -30,6 +31,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -57,6 +59,7 @@ import blueportal.finsandstails.registry.FTSounds;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PenglilEntity.class, EntityDataSerializers.INT);
@@ -176,57 +179,58 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
         ItemStack itemstack1 = new ItemStack(FTItems.PENGLIL_BUCKET.get());
         InteractionResult actionresulttype = super.mobInteract(player, hand);
 
-        if (level().isClientSide()) {
-            return InteractionResult.CONSUME;
+        if (heldItem.getItem() == Items.BUCKET && this.isAlive() && !this.isOrderedToSit()) {
+            playSound(this.getPickupSound(), 1.0F, 1.0F);
+            heldItem.shrink(1);
+            this.saveToBucketTag(itemstack1);
+            if (!this.level().isClientSide) {
+                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemstack1);
+            }
+            if (heldItem.isEmpty()) {
+                player.setItemInHand(hand, itemstack1);
+            } else if (!player.getInventory().add(itemstack1)) {
+                player.drop(itemstack1, false);
+            }
+            this.discard();
+            return InteractionResult.SUCCESS;
         }
-        else {
-            if (heldItem.getItem() == Items.BUCKET && this.isAlive() && !this.isOrderedToSit()) {
-                playSound(this.getPickupSound(), 1.0F, 1.0F);
+
+        float maxHealth = this.getMaxHealth();
+        float health = this.getHealth();
+        if (heldItem.getItem() == FTItems.HIGH_FINNED_BLUE.get() && health < maxHealth) {
+            if (!player.isCreative()) {
                 heldItem.shrink(1);
-                this.saveToBucketTag(itemstack1);
-                if (!this.level().isClientSide) {
-                    CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemstack1);
-                }
-                if (heldItem.isEmpty()) {
-                    player.setItemInHand(hand, itemstack1);
-                } else if (!player.getInventory().add(itemstack1)) {
-                    player.drop(itemstack1, false);
-                }
-                this.discard();
-                return InteractionResult.SUCCESS;
+            }
+            heal(2);
+            double d0 = this.random.nextGaussian() * 0.02D;
+            double d1 = this.random.nextGaussian() * 0.02D;
+            double d2 = this.random.nextGaussian() * 0.02D;
+            this.level().addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
+            return InteractionResult.SUCCESS;
+        }
+
+        if (item == FTItems.WEE.get() && !this.isTame()) {
+            if (!player.getAbilities().instabuild) {
+                heldItem.shrink(1);
             }
 
-            float maxHealth = this.getMaxHealth();
-            float health = this.getHealth();
-            if (heldItem.getItem() == FTItems.WEE.get() && health < maxHealth) {
-                if (!player.isCreative()) {
-                    heldItem.shrink(1);
-                }
-                heal(2);
-                double d0 = this.random.nextGaussian() * 0.02D;
-                double d1 = this.random.nextGaussian() * 0.02D;
-                double d2 = this.random.nextGaussian() * 0.02D;
-                this.level().addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
-                return InteractionResult.SUCCESS;
+            if (this.random.nextInt(3) == 0 && !ForgeEventFactory.onAnimalTame(this, player)) {
+                this.tame(player);
+                this.navigation.stop();
+                this.setTarget(null);
+                this.setOrderedToSit(!isInWater());
+                this.level().broadcastEntityEvent(this, (byte)7);
+            } else {
+                this.level().broadcastEntityEvent(this, (byte)6);
             }
 
-            if (item == FTItems.WEE.get() && !this.isTame()) {
-                if (!player.getAbilities().instabuild) {
-                    heldItem.shrink(1);
-                }
+            return InteractionResult.SUCCESS;
+        }
 
-                if (this.random.nextInt(3) == 0 && !ForgeEventFactory.onAnimalTame(this, player)) {
-                    this.tame(player);
-                    this.navigation.stop();
-                    this.setTarget(null);
-                    this.setOrderedToSit(!isInWater());
-                    this.level().broadcastEntityEvent(this, (byte)7);
-                } else {
-                    this.level().broadcastEntityEvent(this, (byte)6);
-                }
-
-                return InteractionResult.SUCCESS;            }
-            if (this.isOwnedBy(player) && item != FTItems.HIGH_FINNED_BLUE.get() && !isInWater()) {
+        if (this.isOwnedBy(player) && item != FTItems.HIGH_FINNED_BLUE.get() && !isInWater()) {
+            if (player.isSecondaryUseActive()) {
+                startRiding(player);
+            } else {
                 setOrderedToSit(!isOrderedToSit());
                 this.jumping = false;
                 this.navigation.stop();
@@ -235,6 +239,11 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
         }
 
         return actionresulttype;
+    }
+
+    @Override
+    public double getMyRidingOffset() {
+        return 1.0D;
     }
 
     @Override
