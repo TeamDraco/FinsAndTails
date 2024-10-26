@@ -36,8 +36,12 @@ public class PenglilModel<T extends PenglilEntity> extends HierarchicalModel<T> 
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 
-		if (entity.isInWater()) this.animateWalk(PenglilAnimation.SWIM, limbSwing, limbSwingAmount, 3.0F, 100.0F);
-		else this.animateWalk(PenglilAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+		if (entity.isInWater()) {
+			this.animateWalk(PenglilAnimation.SWIM, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			all.xRot = headPitch * ((float) Math.PI / 180F) + 0.7F;
+			all.yRot = netHeadYaw * ((float) Math.PI / 180F);
+		}
+		else this.animateWalk(PenglilAnimation.WALK, limbSwing * 1.5F, limbSwingAmount, 3.0F, 100.0F);
 	}
 
 	public static LayerDefinition createBodyLayer() {
