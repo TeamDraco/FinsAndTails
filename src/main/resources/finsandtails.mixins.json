@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "finsandtails.refmap.json",
   "mixins": [
-    "client.EntityMixin"
+    "server.EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

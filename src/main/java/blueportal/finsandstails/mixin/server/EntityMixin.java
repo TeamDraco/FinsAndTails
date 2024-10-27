@@ -1,4 +1,4 @@
-package blueportal.finsandstails.mixin.client;
+package blueportal.finsandstails.mixin.server;
 
 import blueportal.finsandstails.common.entities.PenglilEntity;
 import net.minecraft.world.entity.Entity;
