@@ -581,7 +581,7 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
             List<ItemEntity> list = PenglilEntity.this.level().getEntitiesOfClass(ItemEntity.class, PenglilEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Dolphin.ALLOWED_ITEMS);
             if (!list.isEmpty()) {
                 PenglilEntity.this.getNavigation().moveTo(list.get(0), 1.2F);
-                PenglilEntity.this.playSound(SoundEvents.DOLPHIN_PLAY, 1.0F, 1.0F);
+                PenglilEntity.this.playSound(FTSounds.PENGLIL_AMBIENT.get(), 1.0F, 1.0F);
             }
 
             this.cooldown = 0;
