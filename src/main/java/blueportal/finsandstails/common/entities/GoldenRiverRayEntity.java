@@ -64,7 +64,7 @@ public class GoldenRiverRayEntity extends AbstractFish implements GeoEntity {
     }
 
     public void playerTouch(Player entityIn) {
-        if (entityIn instanceof ServerPlayer && entityIn.hurt(this.level().damageSources().mobAttack(this), 1)) {
+        if (entityIn instanceof ServerPlayer player && player .hurt(this.level().damageSources().mobAttack(this), 1) && player.getArmorCoverPercentage() <= 0.0D) {
             ((ServerPlayer)entityIn).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PUFFER_FISH_STING, 0.0F));
             entityIn.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 0));
         }
