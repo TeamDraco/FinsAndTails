@@ -1,6 +1,7 @@
 
 package blueportal.finsandstails.client.render;
 
+import blueportal.finsandstails.client.render.layer.PenglilCarryingItemLayer;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.DolphinCarryingItemLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,6 +39,7 @@ public class PenglilRenderer extends MobRenderer<PenglilEntity, PenglilModel<Pen
 
     public PenglilRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new PenglilModel<>(ctx.bakeLayer(FTModelLayers.PENGLIL)), 0.2F);
+        addLayer(new PenglilCarryingItemLayer(this, ctx.getItemInHandRenderer()));
     }
 
     @Override

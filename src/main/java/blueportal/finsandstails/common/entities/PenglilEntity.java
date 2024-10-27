@@ -1,7 +1,6 @@
 package blueportal.finsandstails.common.entities;
 
 import blueportal.finsandstails.registry.FTEntities;
-import com.google.common.collect.Lists;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,9 +28,9 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -48,7 +47,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import blueportal.finsandstails.common.entities.ai.base.SchoolingTamableAnimal;
@@ -71,6 +69,7 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
         super(type, world);
         this.moveControl = new MoveHelperController(this);
         this.lookControl = new SmoothSwimmingLookControl(this, 45);
+        this.setCanPickUpLoot(true);
     }
 
     @Override
@@ -100,6 +99,7 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
             }
         });
         this.goalSelector.addGoal(3, new MorningGiftGoal(this));
+        this.goalSelector.addGoal(4, new PlayWithItemsGoal());
         this.goalSelector.addGoal(5, new TamableFollowLeaderGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, WeeEntity.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, BandedRedbackShrimpEntity.class, true));
@@ -388,14 +388,39 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
         }
     }
 
+    @Override
+    public boolean canTakeItem(ItemStack p_28376_) {
+        EquipmentSlot equipmentslot = Mob.getEquipmentSlotForItem(p_28376_);
+        if (!this.getItemBySlot(equipmentslot).isEmpty()) {
+            return false;
+        } else {
+            return equipmentslot == EquipmentSlot.MAINHAND && super.canTakeItem(p_28376_);
+        }
+    }
+
+    @Override
+    protected void pickUpItem(ItemEntity p_28357_) {
+        if (this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
+            ItemStack itemstack = p_28357_.getItem();
+            if (this.canHoldItem(itemstack)) {
+                this.onItemPickup(p_28357_);
+                this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+                this.setGuaranteedDrop(EquipmentSlot.MAINHAND);
+                this.take(p_28357_, itemstack.getCount());
+                p_28357_.discard();
+            }
+        }
+
+    }
+
     static class MorningGiftGoal extends Goal {
         private final PenglilEntity penglil;
         private Player owner;
         private BlockPos bedPos;
         private int tickCounter;
 
-        public MorningGiftGoal(PenglilEntity catIn) {
-            this.penglil = catIn;
+        public MorningGiftGoal(PenglilEntity penglil) {
+            this.penglil = penglil;
         }
 
         public boolean canUse() {
@@ -465,7 +490,7 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
             RandomSource random = this.penglil.getRandom();
             BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
             mutable.set(this.penglil.blockPosition());
-            this.penglil.randomTeleport((double)(mutable.getX() + random.nextInt(11) - 5), (double)(mutable.getY() + random.nextInt(5) - 2), (double)(mutable.getZ() + random.nextInt(11) - 5), false);
+            this.penglil.randomTeleport((mutable.getX() + random.nextInt(11) - 5), (mutable.getY() + random.nextInt(5) - 2), (mutable.getZ() + random.nextInt(11) - 5), false);
             mutable.set(this.penglil.blockPosition());
             LootTable loottable = this.penglil.level().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
             LootParams.Builder lootcontext$builder = (new LootParams.Builder((ServerLevel) this.penglil.level())).withParameter(LootContextParams.ORIGIN, this.penglil.position()).withParameter(LootContextParams.THIS_ENTITY, this.penglil);
@@ -507,8 +532,9 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
 
         private void updateSpeed() {
             if (this.penglil.isInWater()) {
-                this.penglil.setDeltaMovement(this.penglil.getDeltaMovement().add(0.0D, 0.0005D, 0.0D));
-
+                if (penglil.getTarget() == null && penglil.getNavigation().isDone()) {
+                    this.penglil.setDeltaMovement(this.penglil.getDeltaMovement().add(0.0D, 0.01D, 0.0D));
+                }
                 if (this.penglil.isBaby()) {
                     this.penglil.setSpeed(Math.max(this.penglil.getSpeed() / 3.0F, 0.06F));
                 }
@@ -535,6 +561,65 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
                 this.penglil.setDeltaMovement(this.penglil.getDeltaMovement().add(0.0D, (double)this.penglil.getSpeed() * d1 * 0.1D, 0.0D));
             } else {
                 this.penglil.setSpeed(0.0F);
+            }
+        }
+    }
+
+    class PlayWithItemsGoal extends Goal {
+        private int cooldown;
+
+        public boolean canUse() {
+            if (this.cooldown > PenglilEntity.this.tickCount) {
+                return false;
+            } else {
+                List<ItemEntity> list = PenglilEntity.this.level().getEntitiesOfClass(ItemEntity.class, PenglilEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Dolphin.ALLOWED_ITEMS);
+                return !list.isEmpty() || !PenglilEntity.this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty();
+            }
+        }
+
+        public void start() {
+            List<ItemEntity> list = PenglilEntity.this.level().getEntitiesOfClass(ItemEntity.class, PenglilEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Dolphin.ALLOWED_ITEMS);
+            if (!list.isEmpty()) {
+                PenglilEntity.this.getNavigation().moveTo(list.get(0), 1.2F);
+                PenglilEntity.this.playSound(SoundEvents.DOLPHIN_PLAY, 1.0F, 1.0F);
+            }
+
+            this.cooldown = 0;
+        }
+
+        public void stop() {
+            ItemStack itemstack = PenglilEntity.this.getItemBySlot(EquipmentSlot.MAINHAND);
+            if (!itemstack.isEmpty()) {
+                this.drop(itemstack);
+                PenglilEntity.this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                this.cooldown = PenglilEntity.this.tickCount + PenglilEntity.this.random.nextInt(100);
+            }
+
+        }
+
+        public void tick() {
+            List<ItemEntity> list = PenglilEntity.this.level().getEntitiesOfClass(ItemEntity.class, PenglilEntity.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Dolphin.ALLOWED_ITEMS);
+            ItemStack itemstack = PenglilEntity.this.getItemBySlot(EquipmentSlot.MAINHAND);
+            if (!itemstack.isEmpty()) {
+                this.drop(itemstack);
+                PenglilEntity.this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            } else if (!list.isEmpty()) {
+                PenglilEntity.this.getNavigation().moveTo(list.get(0), 1.2F);
+            }
+
+        }
+
+        private void drop(ItemStack p_28429_) {
+            if (!p_28429_.isEmpty()) {
+                double d0 = PenglilEntity.this.getEyeY() - (double)0.3F;
+                ItemEntity itementity = new ItemEntity(PenglilEntity.this.level(), PenglilEntity.this.getX(), d0, PenglilEntity.this.getZ(), p_28429_);
+                itementity.setPickUpDelay(40);
+                itementity.setThrower(PenglilEntity.this.getUUID());
+                float f = 0.3F;
+                float f1 = PenglilEntity.this.random.nextFloat() * ((float)Math.PI * 2F);
+                float f2 = 0.02F * PenglilEntity.this.random.nextFloat();
+                itementity.setDeltaMovement((0.3F * -Mth.sin(PenglilEntity.this.getYRot() * ((float)Math.PI / 180F)) * Mth.cos(PenglilEntity.this.getXRot() * ((float)Math.PI / 180F)) + Mth.cos(f1) * f2), (double)(0.3F * Mth.sin(PenglilEntity.this.getXRot() * ((float)Math.PI / 180F)) * 1.5F), (double)(0.3F * Mth.cos(PenglilEntity.this.getYRot() * ((float)Math.PI / 180F)) * Mth.cos(PenglilEntity.this.getXRot() * ((float)Math.PI / 180F)) + Mth.sin(f1) * f2));
+                PenglilEntity.this.level().addFreshEntity(itementity);
             }
         }
     }
