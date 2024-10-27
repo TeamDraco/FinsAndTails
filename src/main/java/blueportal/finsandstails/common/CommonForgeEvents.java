@@ -182,6 +182,7 @@ public class CommonForgeEvents {
             PenglilEntity penglil = (PenglilEntity) player.getFirstPassenger();
             penglil.stopRiding();
             penglil.moveTo(pos.relative(dir), player.getYRot(), player.getXRot());
+            player.swing(hand);
         }
     }
 

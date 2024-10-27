@@ -2,10 +2,14 @@
 package blueportal.finsandstails.client.render;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import blueportal.finsandstails.FinsAndTails;
@@ -33,6 +37,19 @@ public class PenglilRenderer extends MobRenderer<PenglilEntity, PenglilModel<Pen
 
     public PenglilRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new PenglilModel<>(ctx.bakeLayer(FTModelLayers.PENGLIL)), 0.2F);
+    }
+
+    @Override
+    public void render(PenglilEntity penglil, float p_115456_, float p_115457_, PoseStack p_115458_, MultiBufferSource p_115459_, int p_115460_) {
+        Minecraft mc = Minecraft.getInstance();
+
+        if (penglil.isPassenger() && penglil.getVehicle() instanceof Player player) {
+            if (player.is(mc.player) && mc.options.getCameraType().isFirstPerson()) {
+                return;
+            }
+        }
+
+        super.render(penglil, p_115456_, p_115457_, p_115458_, p_115459_, p_115460_);
     }
 
     @Override

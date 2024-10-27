@@ -20,8 +20,8 @@ public class EntityMixin {
     private void FT$positionRider(Entity entity, Entity.MoveFunction p_19958_, CallbackInfo ci) {
         if (entity instanceof PenglilEntity penglil && entity.getVehicle() instanceof Player player) {
             double offset = entity.getPassengersRidingOffset() + entity.getMyRidingOffset();
-            double crouchingOffset = player.isCrouching() ? -0.25F : 0.0F;
-            Vec3 pos = getYawVec(player.getYRot(), 0.5F, 0.0F).add(player.position()).add(0.0F, offset + crouchingOffset, 0.0F);
+            double crouchingOffset = player.isCrouching() ? -0.3F : 0.0F;
+            Vec3 pos = getYawVec(player.yBodyRot, 0.35F, 0.0F).add(player.position()).add(0.0F, offset + crouchingOffset, 0.0F);
             p_19958_.accept(penglil, pos.x, pos.y, pos.z);
             ci.cancel();
         }

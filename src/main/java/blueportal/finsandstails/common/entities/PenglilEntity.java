@@ -230,6 +230,7 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
         if (this.isOwnedBy(player) && item != FTItems.HIGH_FINNED_BLUE.get() && !isInWater()) {
             if (player.isSecondaryUseActive()) {
                 startRiding(player);
+                return InteractionResult.SUCCESS;
             } else {
                 setOrderedToSit(!isOrderedToSit());
                 this.jumping = false;
@@ -381,6 +382,9 @@ public class PenglilEntity extends SchoolingTamableAnimal implements Bucketable 
 
         if (isInWater()) {
             setOrderedToSit(false);
+        }
+        if (isPassenger() && getVehicle() instanceof Player player) {
+            setYRot(player.getYHeadRot());
         }
     }
 
