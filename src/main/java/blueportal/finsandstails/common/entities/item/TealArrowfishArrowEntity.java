@@ -19,8 +19,7 @@ import blueportal.finsandstails.common.items.TealArrowfishItem;
 import blueportal.finsandstails.registry.FTEntities;
 import blueportal.finsandstails.registry.FTItems;
 
-public class TealArrowfishArrowEntity extends AbstractArrow implements IEntityAdditionalSpawnData, GeoEntity {
-    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
+public class TealArrowfishArrowEntity extends AbstractArrow implements IEntityAdditionalSpawnData {
     private final TealArrowfishItem arrow;
 
     public TealArrowfishArrowEntity(EntityType<? extends AbstractArrow> type, Level worldIn) {
@@ -61,14 +60,5 @@ public class TealArrowfishArrowEntity extends AbstractArrow implements IEntityAd
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return factory;
     }
 }

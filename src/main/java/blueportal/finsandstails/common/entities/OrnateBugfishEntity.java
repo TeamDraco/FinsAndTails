@@ -1,5 +1,9 @@
 package blueportal.finsandstails.common.entities;
 
+import blueportal.finsandstails.common.entities.ai.base.IKillCooldown;
+import blueportal.finsandstails.common.entities.ai.goals.CooldownMeleeAttackGoal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,7 +28,7 @@ import blueportal.finsandstails.registry.FTItems;
 
 import java.util.function.Predicate;
 
-public class OrnateBugfishEntity extends AbstractSchoolingFish {
+public class OrnateBugfishEntity extends AbstractSchoolingFish implements IKillCooldown {
     public static final Predicate<LivingEntity> IS_PREY = (entity) -> entity.isAlive() && (
             entity instanceof TropicalFish
                     || entity instanceof Cod
@@ -38,6 +42,7 @@ public class OrnateBugfishEntity extends AbstractSchoolingFish {
                     || entity instanceof SwampMuckerEntity
                     || entity instanceof WeeWeeEntity
                     || entity instanceof VibraWeeEntity);
+    public int killCooldown = 0;
 
     public OrnateBugfishEntity(EntityType<? extends OrnateBugfishEntity> type, Level world) {
         super(type, world);
@@ -49,10 +54,28 @@ public class OrnateBugfishEntity extends AbstractSchoolingFish {
     @Override
     public void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(1, new CooldownMeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, PapaWeeEntity.class, 8.0F, 1.6D, 1.4D));
         this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Drowned.class, true));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, AbstractFish.class, 10, true, false, IS_PREY));
+    }
+
+    @Override
+    public boolean killedEntity(ServerLevel p_216988_, LivingEntity p_216989_) {
+        this.killCooldown = this.random.nextInt(600) + 1200;
+        return super.killedEntity(p_216988_, p_216989_);
+    }
+
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (tag.contains("KillCooldownTime")) {
+            this.killCooldown = tag.getInt("KillCooldownTime");
+        }
+    }
+
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("KillCooldownTime", this.killCooldown);
     }
 
     @Override
@@ -96,5 +119,10 @@ public class OrnateBugfishEntity extends AbstractSchoolingFish {
     @Override
     public ItemStack getPickedResult(HitResult target) {
         return new ItemStack(FTItems.ORNATE_BUGFISH_SPAWN_EGG.get());
+    }
+
+    @Override
+    public int getKillCooldown() {
+        return killCooldown;
     }
 }

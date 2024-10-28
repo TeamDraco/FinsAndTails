@@ -1,12 +1,10 @@
 package blueportal.finsandstails.common.entities.ai.goals;
 
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.phys.Vec3;
 import blueportal.finsandstails.common.entities.TealArrowfishEntity;
 
-public class SpearMeleeAttackGoal extends MeleeAttackGoal {
+public class SpearMeleeAttackGoal extends CooldownMeleeAttackGoal {
     protected final TealArrowfishEntity fish;
-
 
     public SpearMeleeAttackGoal(TealArrowfishEntity mob, double speedMod, boolean followingTargetEvenIfNotSeen) {
         super(mob, speedMod, followingTargetEvenIfNotSeen);
@@ -15,7 +13,7 @@ public class SpearMeleeAttackGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canUse() {
-        return fish.getTarget() != null && fish.getTarget().isAlive() && --fish.killCooldown <= 0 && !fish.isFollower() && super.canUse();
+        return !fish.isFollower() && super.canUse();
     }
 
     @Override
