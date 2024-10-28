@@ -48,27 +48,27 @@ public class NightLightSquidModel<T extends NightLightSquidEntity> extends Hiera
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.5F, 24.0F, -0.5F));
+		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.5F, 24.0F, -3.5F));
 
-		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).addBox(-2.5F, -2.0F, -3.0F, 5.0F, 3.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -1.0F, -1.0F, 0.0F, 3.1416F, 0.0F));
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).addBox(-2.5F, -2.0F, -3.0F, 5.0F, 3.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, -1.0F, 1.0F));
 
-		PartDefinition tentacles = body.addOrReplaceChild("tentacles", CubeListBuilder.create().texOffs(24, 8).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, -2.5F));
+		PartDefinition tentacles = body.addOrReplaceChild("tentacles", CubeListBuilder.create().texOffs(24, 8).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.01F)), PartPose.offset(0.0F, -0.5F, 2.5F));
 
-		PartDefinition tentacleNorth = tentacles.addOrReplaceChild("tentacleNorth", CubeListBuilder.create().texOffs(-2, 32).addBox(-1.5F, 0.0F, -2.0F, 3.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.5F, -1.5F));
+		PartDefinition tentacleNorth = tentacles.addOrReplaceChild("tentacleNorth", CubeListBuilder.create().texOffs(-2, 32).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.5F, 1.5F));
 
-		PartDefinition tentacleSouth = tentacles.addOrReplaceChild("tentacleSouth", CubeListBuilder.create().texOffs(-2, 26).addBox(-1.5F, 0.0F, -2.0F, 3.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.5F, -1.5F));
+		PartDefinition tentacleSouth = tentacles.addOrReplaceChild("tentacleSouth", CubeListBuilder.create().texOffs(-2, 26).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.5F, 1.5F));
 
-		PartDefinition tentacleEast = tentacles.addOrReplaceChild("tentacleEast", CubeListBuilder.create().texOffs(1, 26).addBox(0.0F, -1.5F, -2.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.5F, -1.0F, -1.5F));
+		PartDefinition tentacleEast = tentacles.addOrReplaceChild("tentacleEast", CubeListBuilder.create().texOffs(1, 26).addBox(0.0F, -1.5F, 0.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.5F, -1.0F, 1.5F));
 
-		PartDefinition tendrilRight = tentacleEast.addOrReplaceChild("tendrilRight", CubeListBuilder.create().texOffs(24, 0).addBox(-1.5F, 0.0F, -8.0F, 3.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, 0.0F, -1.5708F));
+		PartDefinition tendrilRight = tentacleEast.addOrReplaceChild("tendrilRight", CubeListBuilder.create().texOffs(24, 0).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 1.0F, 0.0F, 0.0F, -1.5708F));
 
-		PartDefinition tentacleWest = tentacles.addOrReplaceChild("tentacleWest", CubeListBuilder.create().texOffs(1, 26).mirror().addBox(0.0F, -1.5F, -2.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.5F, -1.0F, -1.5F));
+		PartDefinition tentacleWest = tentacles.addOrReplaceChild("tentacleWest", CubeListBuilder.create().texOffs(1, 26).mirror().addBox(0.0F, -1.5F, 0.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.5F, -1.0F, 1.5F));
 
-		PartDefinition tendrilLeft = tentacleWest.addOrReplaceChild("tendrilLeft", CubeListBuilder.create().texOffs(24, 0).mirror().addBox(-1.4782F, -0.0005F, -8.0F, 3.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, 0.0F, 1.6144F));
+		PartDefinition tendrilLeft = tentacleWest.addOrReplaceChild("tendrilLeft", CubeListBuilder.create().texOffs(24, 0).mirror().addBox(-1.5F, 0.0F, 0.0F, 3.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 1.5708F));
 
-		PartDefinition finRight = body.addOrReplaceChild("finRight", CubeListBuilder.create().texOffs(-1, 0).mirror().addBox(-2.0F, 0.0F, -3.5F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-2.5F, -0.5F, 1.5F));
+		PartDefinition finRight = body.addOrReplaceChild("finRight", CubeListBuilder.create().texOffs(4, 3).mirror().addBox(-2.0F, 0.0F, -1.5F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-2.5F, -0.5F, -1.5F));
 
-		PartDefinition finLeft = body.addOrReplaceChild("finLeft", CubeListBuilder.create().texOffs(-1, 0).addBox(-3.0F, 0.0F, -3.5F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, -0.5F, 1.5F));
+		PartDefinition finLeft = body.addOrReplaceChild("finLeft", CubeListBuilder.create().texOffs(4, 3).addBox(-3.0F, 0.0F, -1.5F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, -0.5F, -1.5F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
