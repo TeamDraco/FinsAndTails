@@ -1,5 +1,7 @@
 package blueportal.finsandstails.common.entities;
 
+import blueportal.finsandstails.common.entities.ai.base.AgeableWaterAnimal;
+import blueportal.finsandstails.common.entities.ai.goals.AgeableWaterAnimalBreedGoal;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +26,9 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -48,14 +52,15 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import blueportal.finsandstails.registry.FTEntities;
 import blueportal.finsandstails.registry.FTItems;
 
-public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
+public class RiverPebbleSnailEntity extends AgeableWaterAnimal implements Bucketable, GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(RiverPebbleSnailEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> IS_SHIMMER = SynchedEntityData.defineId(RiverPebbleSnailEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(RiverPebbleSnailEntity.class, EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     public int shimmerTime = 20;
     public int shimmerCooldown = this.random.nextInt(100) + 200;
 
-    public RiverPebbleSnailEntity(EntityType<? extends RiverPebbleSnailEntity> type, Level worldIn) {
+    public RiverPebbleSnailEntity(EntityType<? extends AgeableWaterAnimal> type, Level worldIn) {
         super(type, worldIn);
         this.moveControl = new MoveHelperController(this);
     }
@@ -66,14 +71,10 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
     public void registerGoals() {
-        this.goalSelector.addGoal(0, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(0, new AgeableWaterAnimalBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(0, new AvoidEntityGoal<>(this, GoldenRiverRayEntity.class, 8.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(1, new RandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new RandomStrollGoal(this, 0.6D));
         this.goalSelector.addGoal(2, new TemptGoal(this, 1.25D, Ingredient.of(Items.BROWN_MUSHROOM), false));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
@@ -88,6 +89,10 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4).add(Attributes.MOVEMENT_SPEED, 0.15);
+    }
+
+    @Override
+    protected void handleAirSupply(int p_30344_) {
     }
 
     @Override
@@ -126,7 +131,7 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob ageable) {
+    public AgeableWaterAnimal getBreedOffspring(ServerLevel world, AgeableWaterAnimal ageable) {
         RiverPebbleSnailEntity snail = FTEntities.RIVER_PEBBLE_SNAIL.get().create(world);
         snail.setVariant(random.nextInt(5));
 
@@ -142,12 +147,13 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
         return new ItemStack(FTItems.RIVER_PEBBLE_SNAIL_SPAWN_EGG.get());
     }
 
-    public static boolean canSnailSpawn(EntityType<? extends Animal> entity, LevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource rand) {
-        return level.getFluidState(pos).is(FluidTags.WATER) /*&& level.getBlockState(pos.above()).is(Blocks.WATER)*/;
-    }
-
     public boolean isFood(ItemStack stack) {
         return stack.getItem() == Items.BROWN_MUSHROOM;
+    }
+
+    @Override
+    public ItemStack getBucketItemStack() {
+        return new ItemStack(FTItems.RIVER_PEBBLE_SNAIL_POT.get());
     }
 
     @Override
@@ -157,16 +163,16 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
         if (heldItem.getItem() == Items.FLOWER_POT && this.isAlive() && !this.isBaby()) {
             playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 1.0F, 1.0F);
             heldItem.shrink(1);
-            ItemStack itemstack1 = new ItemStack(FTItems.RIVER_PEBBLE_SNAIL_POT.get());
-            this.setBucketData(itemstack1);
+            ItemStack bucket = getBucketItemStack();
+            this.saveToBucketTag(bucket);
             if (!this.level().isClientSide) {
-                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemstack1);
+                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, bucket);
                 heldItem.getOrCreateTag().putInt("Age", getAge());
             }
             if (heldItem.isEmpty()) {
-                player.setItemInHand(hand, itemstack1);
-            } else if (!player.getInventory().add(itemstack1)) {
-                player.drop(itemstack1, false);
+                player.setItemInHand(hand, bucket);
+            } else if (!player.getInventory().add(bucket)) {
+                player.drop(bucket, false);
             }
             this.discard();
             return InteractionResult.SUCCESS;
@@ -174,12 +180,24 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
         return super.mobInteract(player, hand);
     }
 
-    private void setBucketData(ItemStack bucket) {
-        CompoundTag compoundnbt = bucket.getOrCreateTag();
-        compoundnbt.putInt("Variant", this.getVariant());
-        if (this.hasCustomName()) {
-            bucket.setHoverName(this.getCustomName());
-        }
+    public boolean requiresCustomPersistence() {
+        return super.requiresCustomPersistence() || this.fromBucket();
+    }
+
+    public boolean removeWhenFarAway(double p_27492_) {
+        return !this.fromBucket() && !this.hasCustomName();
+    }
+
+    public int getMaxSpawnClusterSize() {
+        return 8;
+    }
+
+    public boolean fromBucket() {
+        return this.entityData.get(FROM_BUCKET);
+    }
+
+    public void setFromBucket(boolean p_27498_) {
+        this.entityData.set(FROM_BUCKET, p_27498_);
     }
 
     @Override
@@ -204,6 +222,7 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
         super.defineSynchedData();
         this.entityData.define(VARIANT, 0);
         this.entityData.define(IS_SHIMMER, false);
+        this.entityData.define(FROM_BUCKET, false);
     }
 
     public int getVariant() {
@@ -225,6 +244,7 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
+        compound.putBoolean("FromBucket", this.fromBucket());
         compound.putInt("Variant", getVariant());
     }
 
@@ -232,7 +252,27 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         setVariant(compound.getInt("Variant"));
+        setFromBucket(compound.getBoolean("FromBucket"));
     }
+
+    public void saveToBucketTag(ItemStack stack) {
+        CompoundTag compoundnbt = stack.getOrCreateTag();
+        compoundnbt.putInt("Variant", this.getVariant());
+        if (this.hasCustomName()) {
+            stack.setHoverName(this.getCustomName());
+        }
+
+        Bucketable.saveDefaultDataToBucketTag(this, stack);
+    }
+
+    public void loadFromBucketTag(CompoundTag p_148708_) {
+        Bucketable.loadDefaultDataFromBucketTag(this, p_148708_);
+    }
+
+    public SoundEvent getPickupSound() {
+        return SoundEvents.BUCKET_FILL_FISH;
+    }
+
 
     public PathNavigation createNavigation(Level world) {
         return new GroundPathNavigation(this, world);
@@ -262,11 +302,6 @@ public class RiverPebbleSnailEntity extends Animal implements GeoEntity {
         else {
             return PlayState.STOP;
         }
-    }
-
-    @Override
-    protected float getWaterSlowDown() {
-        return 0.00005F;
     }
 
     @Override
