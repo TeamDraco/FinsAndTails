@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "finsandtails:wherbloo",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 320618515,
+    "spacing": 34,
+    "separation": 8
+  }
+}
