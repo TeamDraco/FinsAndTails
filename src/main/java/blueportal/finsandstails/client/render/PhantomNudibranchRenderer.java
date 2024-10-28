@@ -1,4 +1,3 @@
-
 package blueportal.finsandstails.client.render;
 
 import net.minecraft.client.renderer.RenderType;

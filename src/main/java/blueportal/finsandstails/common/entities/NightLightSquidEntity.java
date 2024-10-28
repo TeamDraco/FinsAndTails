@@ -40,9 +40,8 @@ import blueportal.finsandstails.registry.FTItems;
 
 import javax.annotation.Nullable;
 
-public class NightLightSquidEntity extends AbstractSchoolingFish implements GeoEntity {
+public class NightLightSquidEntity extends AbstractSchoolingFish {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(NightLightSquidEntity.class, EntityDataSerializers.INT);
-    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     public float prevSquidPitch;
     public float squidRotation;
 
@@ -183,31 +182,6 @@ public class NightLightSquidEntity extends AbstractSchoolingFish implements GeoE
         } else {
             super.handleEntityEvent(id);
         }
-    }
-
-    @Override
-    public ItemStack getPickedResult(HitResult target) {
-        return new ItemStack(FTItems.NIGHT_LIGHT_SQUID_SPAWN_EGG.get());
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController<GeoEntity>(this, "controller", 5, this::predicate));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return factory;
-    }
-
-    private <E extends GeoEntity> PlayState predicate(AnimationState<E> event) {
-        if (event.isMoving()) {
-            event.setAnimation(RawAnimation.begin().thenLoop("animation.nightlight_squid.swim"));
-        }
-        else {
-            event.setAnimation(RawAnimation.begin().thenLoop("animation.nightlight_squid.idle"));
-        }
-        return PlayState.CONTINUE;
     }
 
     static class MoveHelperController extends MoveControl {
