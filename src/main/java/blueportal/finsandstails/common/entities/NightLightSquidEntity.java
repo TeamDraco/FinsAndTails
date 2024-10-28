@@ -168,51 +168,11 @@ public class NightLightSquidEntity extends AbstractSchoolingFish {
 
     }
 
-    public static boolean checkSquidSpawnRules(EntityType<NightLightSquidEntity> entity, LevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource p_223365_4_) {
-        return pos.getY() < world.getSeaLevel() && world.getBlockState(pos.above()).is(Blocks.WATER);
-    }
-
     public void handleEntityEvent(byte id) {
         if (id == 19) {
             this.squidRotation = 0.0F;
         } else {
             super.handleEntityEvent(id);
-        }
-    }
-
-    static class MoveHelperController extends MoveControl {
-        private final NightLightSquidEntity fish;
-
-        MoveHelperController(NightLightSquidEntity fish) {
-            super(fish);
-            this.fish = fish;
-        }
-
-        public void tick() {
-            if (this.fish.isEyeInFluid(FluidTags.WATER)) {
-                this.fish.setDeltaMovement(this.fish.getDeltaMovement().add(0.0D, 0.005D, 0.0D));
-            }
-
-            if (this.operation == Operation.MOVE_TO && !this.fish.getNavigation().isDone()) {
-                float f = (float) (this.speedModifier * this.fish.getAttributeValue(Attributes.MOVEMENT_SPEED));
-                this.fish.setSpeed(Mth.lerp(0.125F, this.fish.getSpeed(), f));
-                double d0 = this.wantedX - this.fish.getX();
-                double d1 = this.wantedY - this.fish.getY();
-                double d2 = this.wantedZ - this.fish.getZ();
-                if (d1 != 0.0D) {
-                    double d3 = Mth.sqrt((float) (d0 * d0 + d1 * d1 + d2 * d2));
-                    this.fish.setDeltaMovement(this.fish.getDeltaMovement().add(0.0D, (double) this.fish.getSpeed() * (d1 / d3) * 0.1D, 0.0D));
-                }
-
-                if (d0 != 0.0D || d2 != 0.0D) {
-                    float f1 = (float) (Mth.atan2(d2, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
-                    this.fish.setYRot(this.rotlerp(this.fish.getYRot(), f1, 90.0F));
-                    this.fish.yBodyRot = this.fish.getYRot();
-                }
-
-            } else {
-                this.fish.setSpeed(0.0F);
-            }
         }
     }
 }
