@@ -10,6 +10,7 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.util.Map;
 
@@ -24,7 +25,9 @@ public class NightLightSquidRenderer extends MobRenderer<NightLightSquidEntity, 
 
     public NightLightSquidRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new NightLightSquidModel<>(ctx.bakeLayer(FTModelLayers.NIGHT_LIGHT_SQUID)), 0.25f);
-        addLayer(new FTGlowLayer<>(this, NIGHT_LIGHT_SQUID_GLOW_LOCATION));
+        addLayer(new FTGlowLayer<>(this, NIGHT_LIGHT_SQUID_GLOW_LOCATION, (p_234793_, p_234794_, p_234795_) -> {
+            return Math.max(0.0F, Mth.cos(p_234795_ * 0.1F));
+        }));
     }
 
     @Override

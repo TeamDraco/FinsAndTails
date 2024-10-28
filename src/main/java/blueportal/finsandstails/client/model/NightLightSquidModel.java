@@ -1,5 +1,6 @@
 package blueportal.finsandstails.client.model;
 
+import blueportal.finsandstails.client.animation.NightlightSquidAnimation;
 import blueportal.finsandstails.common.entities.NightLightSquidEntity;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -33,6 +34,16 @@ public class NightLightSquidModel<T extends NightLightSquidEntity> extends Hiera
 		this.finLeft = this.body.getChild("finLeft");
 	}
 
+	@Override
+	public void setupAnim(NightLightSquidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.root().getAllParts().forEach(ModelPart::resetPose);
+
+		this.body.xRot = headPitch * (((float)Math.PI / 180F) / 2);
+		this.body.yRot = netHeadYaw * (((float)Math.PI / 180F) / 2);
+
+		animateWalk(NightlightSquidAnimation.SWIM, ageInTicks * 0.4F, 0.5F, 3.0F, 100.0F);
+	}
+
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
@@ -60,11 +71,6 @@ public class NightLightSquidModel<T extends NightLightSquidEntity> extends Hiera
 		PartDefinition finLeft = body.addOrReplaceChild("finLeft", CubeListBuilder.create().texOffs(-1, 0).addBox(-3.0F, 0.0F, -3.5F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(2.5F, -0.5F, 1.5F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-
-	@Override
-	public void setupAnim(NightLightSquidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
 	}
 
 	@Override
