@@ -13,16 +13,13 @@ import blueportal.finsandstails.registry.FTItems;
 public class FTItemProperties {
 
     public static void setupItemProperties() {
-
         registerBroken(FTItems.GEM_CRAB_AMULET.get());
         for (RegistryObject<Item> item : FTItems.ITEMS.getEntries()) {
             if (item.get() instanceof FinsBucketItem || item.get() instanceof FinsPotItem) {
                 registerVariant(item.get());
             }
         }
-
     }
-
 
     private static void registerVariant(Item item) {
         ItemProperties.register(item, new ResourceLocation(FinsAndTails.MOD_ID, "variant"), (stack, world, player, i) -> stack.hasTag() ? stack.getTag().getInt("Variant") : 0);

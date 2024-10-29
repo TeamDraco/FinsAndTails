@@ -1,4 +1,4 @@
-package blueportal.finsandstails.registry;
+package blueportal.finsandstails.client;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +21,7 @@ public class FTModelLayers {
     public static final ModelLayerLocation WEE = main("wee");
     public static final ModelLayerLocation PENGLIL = main("penglil");
     public static final ModelLayerLocation NIGHT_LIGHT_SQUID = main("night_light_squid");
+    public static final ModelLayerLocation WANDERING_SAILOR = main("wandering_sailor");
 
     private static ModelLayerLocation register(String id, String name) {
         return new ModelLayerLocation(new ResourceLocation(FinsAndTails.MOD_ID, id), name);

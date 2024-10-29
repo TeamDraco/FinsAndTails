@@ -39,11 +39,10 @@ import blueportal.finsandstails.registry.FTSounds;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class WanderingSailorEntity extends AbstractVillager implements Merchant, GeoEntity {
+public class WanderingSailorEntity extends AbstractVillager implements Merchant {
     public static final Int2ObjectMap<VillagerTrades.ItemListing[]> TRADES = toIntMap(ImmutableMap.of(
             1, new VillagerTrades.ItemListing[]{new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_EMERALD.get()), new ItemStack(FTItems.BANDED_REDBACK_SHRIMP_BUCKET.get()), 3, 3, 30), new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_RUBY.get(), 4), new ItemStack(FTItems.GOPJET_JET.get()), 3, 3, 30), new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_AMBER.get(), 4), new ItemStack(FTItems.FWIN.get(), 1), 3, 3, 30), new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_EMERALD.get(), 2), new ItemStack(FTItems.WHITE_BULL_CRAB_CLAW.get(), 2), 3, 3, 30)},
             2, new VillagerTrades.ItemListing[]{new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_SAPPHIRE.get()), new ItemStack(FTItems.NIGHT_LIGHT_SQUID_TENTACLE.get(), 5), 3, 3, 30), new ItemsForItemsTrade(new ItemStack(FTItems.SPINDLY_PEARL.get()), new ItemStack(FTItems.PAPA_WEE_BUCKET.get()), 3, 3, 30)}));
-    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     public WanderingSailorEntity(EntityType<? extends AbstractVillager> type, Level worldIn) {
         super(type, worldIn);
@@ -169,25 +168,6 @@ public class WanderingSailorEntity extends AbstractVillager implements Merchant,
 
     private static Int2ObjectMap<VillagerTrades.ItemListing[]> toIntMap(ImmutableMap<Integer, VillagerTrades.ItemListing[]> p_221238_0_) {
         return new Int2ObjectOpenHashMap<>(p_221238_0_);
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController<GeoEntity>(this, "controller", 5, this::predicate));
-    }
-
-    private <E extends GeoEntity> PlayState predicate(AnimationState<E> event) {
-        if (event.isMoving()) {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("animation.wandering_sailor.walk"));
-        } else {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("animation.wandering_sailor.idle"));
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return factory;
     }
 
     private static class ItemsForItemsTrade implements VillagerTrades.ItemListing {

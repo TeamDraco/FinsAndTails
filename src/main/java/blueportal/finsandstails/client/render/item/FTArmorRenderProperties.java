@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import blueportal.finsandstails.client.model.armor.GopjetpackModel;
 import blueportal.finsandstails.common.items.GopjetpackItem;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class FTArmorRenderProperties implements IClientItemExtensions {
     private static boolean init;

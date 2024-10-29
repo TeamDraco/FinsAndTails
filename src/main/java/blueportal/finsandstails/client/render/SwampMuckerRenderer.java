@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.SwampMuckerModel;
 import blueportal.finsandstails.common.entities.SwampMuckerEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class SwampMuckerRenderer extends MobRenderer<SwampMuckerEntity, SwampMuckerModel<SwampMuckerEntity>> {
     private static final ResourceLocation SWAMP_MUCKER_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/swamp_mucker/swamp_mucker.png");

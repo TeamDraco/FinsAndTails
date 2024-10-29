@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.PhantomNudibranchModel;
 import blueportal.finsandstails.common.entities.PhantomNudibranchEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class PhantomNudibranchRenderer extends MobRenderer<PhantomNudibranchEntity, PhantomNudibranchModel<PhantomNudibranchEntity>> {
     private static final ResourceLocation PHANTOM_NUDIBRANCH_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/phantom_nudibranch/phantom_nudibranch.png");

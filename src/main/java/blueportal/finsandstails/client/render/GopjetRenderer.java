@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.GopjetModel;
 import blueportal.finsandstails.common.entities.GopjetEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class GopjetRenderer extends MobRenderer<GopjetEntity, GopjetModel<GopjetEntity>> {
     private static final ResourceLocation GOPJET_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/gopjet/gopjet.png");

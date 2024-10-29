@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.DolphinCarryingItemLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.PenglilModel;
 import blueportal.finsandstails.common.entities.PenglilEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 import java.util.Map;
 

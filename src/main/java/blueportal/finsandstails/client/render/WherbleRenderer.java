@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.WherbleModel;
 import blueportal.finsandstails.common.entities.WherbleEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class WherbleRenderer extends MobRenderer<WherbleEntity, WherbleModel<WherbleEntity>> {
     private final WherbleModel<WherbleEntity> adultModel = this.getModel();

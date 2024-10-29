@@ -58,6 +58,7 @@ public class ClientEvents {
         event.registerLayerDefinition(FTModelLayers.WEE, WeeModel::createBodyLayer);
         event.registerLayerDefinition(FTModelLayers.PENGLIL, PenglilModel::createBodyLayer);
         event.registerLayerDefinition(FTModelLayers.NIGHT_LIGHT_SQUID, NightLightSquidModel::createBodyLayer);
+        event.registerLayerDefinition(FTModelLayers.WANDERING_SAILOR, WanderingSailorModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -77,6 +78,7 @@ public class ClientEvents {
         event.registerEntityRenderer(FTEntities.WEE.get(), WeeRenderer::new);
         event.registerEntityRenderer(FTEntities.PENGLIL.get(), PenglilRenderer::new);
         event.registerEntityRenderer(FTEntities.NIGHT_LIGHT_SQUID.get(), NightLightSquidRenderer::new);
+        event.registerEntityRenderer(FTEntities.WANDERING_SAILOR.get(), WanderingSailorRenderer::new);
 
         event.registerEntityRenderer(FTEntities.RED_BULL_CRAB.get(), RedBullCrabRenderer::new);
         event.registerEntityRenderer(FTEntities.WHITE_BULL_CRAB.get(), WhiteBullCrabRenderer::new);
@@ -89,7 +91,6 @@ public class ClientEvents {
         event.registerEntityRenderer(FTEntities.RUBBER_BELLY_GLIDER.get(), RubberBellyGliderRenderer::new);
         event.registerEntityRenderer(FTEntities.SIDEROL_WHISKERED_SNAIL.get(), SiderolWhiskeredSnailRenderer::new);
         event.registerEntityRenderer(FTEntities.VIBRA_WEE.get(), VibraWeeRenderer::new);
-        event.registerEntityRenderer(FTEntities.WANDERING_SAILOR.get(), WanderingSailorRenderer::new);
         event.registerEntityRenderer(FTEntities.SPINDLY_GEM_CRAB.get(), SpindlyGemCrabRenderer::new);
         event.registerEntityRenderer(FTEntities.CROWNED_HORATEE.get(), CrownedHorateeRenderer::new);
     }

@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.GoldenRiverRayModel;
 import blueportal.finsandstails.common.entities.GoldenRiverRayEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 @OnlyIn(Dist.CLIENT)
 public class GoldenRiverRayRenderer extends MobRenderer<GoldenRiverRayEntity, GoldenRiverRayModel<GoldenRiverRayEntity>> {

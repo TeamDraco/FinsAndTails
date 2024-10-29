@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.TealArrowfishModel;
 import blueportal.finsandstails.common.entities.TealArrowfishEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class TealArrowfishRenderer extends MobRenderer<TealArrowfishEntity, TealArrowfishModel<TealArrowfishEntity>> {
     private static final ResourceLocation TEAL_ARROWFISH_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/teal_arrowfish/teal_arrowfish.png");

@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.WeeModel;
 import blueportal.finsandstails.common.entities.WeeEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class WeeRenderer extends MobRenderer<WeeEntity, WeeModel<WeeEntity>> {
     private static final ResourceLocation BLU_WEE_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/wee/blu_wee.png");

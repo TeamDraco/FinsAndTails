@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.OrnateBugfishModel;
 import blueportal.finsandstails.common.entities.OrnateBugfishEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class OrnateBugfishRenderer extends MobRenderer<OrnateBugfishEntity, OrnateBugfishModel<OrnateBugfishEntity>> {
     private static final ResourceLocation ORNATE_BUGFISH_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/ornate_bugfish/ornate_bugfish.png");

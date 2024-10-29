@@ -4,7 +4,7 @@ import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.NightLightSquidModel;
 import blueportal.finsandstails.client.render.layer.FTGlowLayer;
 import blueportal.finsandstails.common.entities.NightLightSquidEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

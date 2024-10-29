@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.MudhorseModel;
 import blueportal.finsandstails.common.entities.MudhorseEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 @OnlyIn(Dist.CLIENT)
 public class MudhorseRenderer extends MobRenderer<MudhorseEntity, MudhorseModel<MudhorseEntity>> {

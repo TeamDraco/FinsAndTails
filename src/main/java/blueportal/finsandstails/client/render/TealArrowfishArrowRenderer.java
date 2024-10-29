@@ -12,7 +12,7 @@ import net.minecraft.util.Mth;
 import blueportal.finsandstails.FinsAndTails;
 import blueportal.finsandstails.client.model.TealArrowfishModel;
 import blueportal.finsandstails.common.entities.item.TealArrowfishArrowEntity;
-import blueportal.finsandstails.registry.FTModelLayers;
+import blueportal.finsandstails.client.FTModelLayers;
 
 public class TealArrowfishArrowRenderer extends EntityRenderer<TealArrowfishArrowEntity> {
     private static final ResourceLocation TEAL_ARROWFISH_LOCATION = new ResourceLocation(FinsAndTails.MOD_ID,"textures/entity/teal_arrowfish/teal_arrowfish.png");
