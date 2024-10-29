@@ -34,8 +34,13 @@ public class NightLightSquidEntity extends AbstractSchoolingFish {
 
     public NightLightSquidEntity(EntityType<? extends NightLightSquidEntity> type, Level worldIn) {
         super(type, worldIn);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 90, 10, 0.02F, 0.1F, true);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
+    }
+
+    @Override
+    public int getMaxHeadXRot() {
+        return 90;
     }
 
     public void registerGoals() {

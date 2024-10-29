@@ -38,8 +38,8 @@ public class NightLightSquidModel<T extends NightLightSquidEntity> extends Hiera
 	public void setupAnim(NightLightSquidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 
-		this.body.xRot = headPitch * (((float)Math.PI / 180F) / 2);
-		this.body.yRot = netHeadYaw * (((float)Math.PI / 180F) / 2);
+		this.body.xRot = headPitch * (float)Math.PI / 180F;
+		this.body.yRot = netHeadYaw * (float)Math.PI / 180F;
 
 		animateWalk(NightlightSquidAnimation.SWIM, ageInTicks * 0.4F, 0.5F, 3.0F, 100.0F);
 	}

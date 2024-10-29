@@ -35,9 +35,8 @@ import blueportal.finsandstails.registry.FTTags;
 
 import java.util.List;
 
-public class WeeEntity extends AbstractSchoolingFish implements GeoEntity {
+public class WeeEntity extends AbstractSchoolingFish {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(WeeEntity.class, EntityDataSerializers.INT);
-    private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     public WeeEntity(EntityType<? extends WeeEntity> type, Level world) {
         super(type, world);
@@ -57,7 +56,10 @@ public class WeeEntity extends AbstractSchoolingFish implements GeoEntity {
         int variant;
         Holder<Biome> holder = worldIn.getBiome(this.blockPosition());
 
-        if (dataTag == null) {
+        if (reason == MobSpawnType.SPAWN_EGG) {
+            variant = random.nextInt(3);
+        }
+        else if (dataTag == null) {
             if (holder.is(BiomeTags.IS_JUNGLE)) variant = 1;
             else if (holder.is(FTTags.MUCK_WEE_SPAWNS)) variant = 2;
             else variant = 0;
@@ -143,25 +145,4 @@ public class WeeEntity extends AbstractSchoolingFish implements GeoEntity {
         List<PapaWeeEntity> papaWeeList = this.level().getEntitiesOfClass(PapaWeeEntity.class, this.getBoundingBox().inflate(16.0D));
         return weeList.size() >= 10 && papaWeeList.isEmpty();
     }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController<GeoEntity>(this, "controller", 5, this::predicate));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return factory;
-    }
-
-    private <E extends GeoEntity> PlayState predicate(AnimationState<E> event) {
-        if (event.isMoving()) {
-            event.setAnimation(RawAnimation.begin().thenLoop("animation.wee.swim"));
-        }
-        else {
-            event.setAnimation(RawAnimation.begin().thenLoop("animation.wee.idle"));
-        }
-        return PlayState.CONTINUE;
-    }
-
 }
