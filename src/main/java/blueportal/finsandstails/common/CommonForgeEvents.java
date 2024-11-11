@@ -1,10 +1,16 @@
 package blueportal.finsandstails.common;
 
+import blueportal.finsandstails.data.PlayerHitComboProvider;
+import blueportal.finsandstails.network.FTMessages;
+import blueportal.finsandstails.network.HitComboSyncS2CPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -93,33 +99,33 @@ public class CommonForgeEvents {
 
     @SubscribeEvent
     public static void onPlayerAttackEntity(AttackEntityEvent e) {
-        //InteractionHand hand = InteractionHand.MAIN_HAND;
-        //Entity target = e.getTarget();
-        //Player player = e.getEntity();
-        //ItemStack mainhandItem = player.getItemInHand(hand);
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        Entity target = e.getTarget();
+        Player player = e.getEntity();
+        ItemStack mainhandItem = player.getItemInHand(hand);
 
-        //if (mainhandItem.is(FTTags.CLAW_GAUNTLETS)) {
-        //    if (player instanceof ServerPlayer serverPlayer) {
-        //        player.getCapability(PlayerHitComboProvider.HIT_COMBO).ifPresent(provider -> {
-        //            if (provider.getHitCombo() < 4) {
-        //                provider.setHitCombo(provider.getHitCombo() + 1);
-        //            }
-        //            else if (provider.getHitCombo() == 4) {
-        //                provider.setHitCombo(0);
+        if (mainhandItem.is(FTTags.CLAW_GAUNTLETS)) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                player.getCapability(PlayerHitComboProvider.HIT_COMBO).ifPresent(provider -> {
+                    if (provider.getHitCombo() < 4) {
+                        provider.setHitCombo(provider.getHitCombo() + 1);
+                    }
+                    else if (provider.getHitCombo() == 4) {
+                        provider.setHitCombo(0);
 
-        //                target.setDeltaMovement(target.getDeltaMovement().add(0.0D, 0.65D, 0.0D));
-        //                target.playSound(SoundEvents.PLAYER_LEVELUP);
+                        target.setDeltaMovement(target.getDeltaMovement().add(0.0D, 0.65D, 0.0D));
+                        target.playSound(SoundEvents.PLAYER_LEVELUP);
 
-        //                for (int i = 0; i < 20; i++) {
-        //                    if (target.level() instanceof ServerLevel sl) {
-        //                        sl.sendParticles(ParticleTypes.CRIT, target.getRandomX(1.0D), target.getRandomY(), target.getRandomZ(1.0D), 1, 0.0D, 0.0D, 0.0D, 0.0D);
-        //                    }
-        //                }
-        //            }
-        //            FTMessages.sendToPlayer(new HitComboSyncS2CPacket(provider.getHitCombo()), serverPlayer);
-        //        });
-        //    }
-        //}
+                        for (int i = 0; i < 20; i++) {
+                            if (target.level() instanceof ServerLevel sl) {
+                                sl.sendParticles(ParticleTypes.CRIT, target.getRandomX(1.0D), target.getRandomY(), target.getRandomZ(1.0D), 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                            }
+                        }
+                    }
+                    FTMessages.sendToPlayer(new HitComboSyncS2CPacket(provider.getHitCombo()), serverPlayer);
+                });
+            }
+        }
     }
 
     @SubscribeEvent
@@ -134,24 +140,24 @@ public class CommonForgeEvents {
             if (player instanceof ServerPlayer serverPlayer && target.hurt(player.level().damageSources().playerAttack(player), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                 offhandItem.hurtAndBreak(1, player, (p_21301_) -> p_21301_.broadcastBreakEvent(EquipmentSlot.OFFHAND));
 
-                //player.getCapability(PlayerHitComboProvider.HIT_COMBO).ifPresent(provider -> {
-                //    if (provider.getHitCombo() < 4) {
-                //        provider.setHitCombo(provider.getHitCombo() + 1);
-                //    }
-                //    else if (provider.getHitCombo() == 4) {
-                //        provider.setHitCombo(0);
+                player.getCapability(PlayerHitComboProvider.HIT_COMBO).ifPresent(provider -> {
+                    if (provider.getHitCombo() < 4) {
+                        provider.setHitCombo(provider.getHitCombo() + 1);
+                    }
+                    else if (provider.getHitCombo() == 4) {
+                        provider.setHitCombo(0);
 
-                //        target.setDeltaMovement(target.getDeltaMovement().add(0.0D, 0.65D, 0.0D));
-                //        target.playSound(SoundEvents.PLAYER_LEVELUP);
+                        target.setDeltaMovement(target.getDeltaMovement().add(0.0D, 0.65D, 0.0D));
+                        target.playSound(SoundEvents.PLAYER_LEVELUP);
 
-                //        for (int i = 0; i < 20; i++) {
-                //            if (target.level() instanceof ServerLevel sl) {
-                //                sl.sendParticles(ParticleTypes.CRIT, target.getRandomX(1.0D), target.getRandomY(), target.getRandomZ(1.0D), 1, 0.0D, 0.0D, 0.0D, 0.0D);
-                //            }
-                //        }
-                //    }
-                //    FTMessages.sendToPlayer(new HitComboSyncS2CPacket(provider.getHitCombo()), serverPlayer);
-                //});
+                        for (int i = 0; i < 20; i++) {
+                            if (target.level() instanceof ServerLevel sl) {
+                                sl.sendParticles(ParticleTypes.CRIT, target.getRandomX(1.0D), target.getRandomY(), target.getRandomZ(1.0D), 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                            }
+                        }
+                    }
+                    FTMessages.sendToPlayer(new HitComboSyncS2CPacket(provider.getHitCombo()), serverPlayer);
+                });
 
                 if (offhandItem.getEnchantmentLevel(FTEnchantments.UPPERCUTTING.get()) > 0) {
                     target.setDeltaMovement(target.getDeltaMovement().add(0.0D, 0.3D, 0.0D));
